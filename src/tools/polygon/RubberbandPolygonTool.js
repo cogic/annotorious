@@ -56,6 +56,8 @@ export default class RubberbandPolygonTool extends Tool {
   }
 
   onDblClick = () => {
+    if (this.rubberband.points.length < (this.config.minPolygonPoints || 0)) return;
+
     this._isDrawing = false;
 
     const shape = this.rubberband.element;
