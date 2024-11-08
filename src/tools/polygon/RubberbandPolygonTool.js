@@ -20,7 +20,8 @@ export default class RubberbandPolygonTool extends Tool {
 
     this.attachListeners({
       mouseMove: this.onMouseMove,
-      mouseUp: this.onMouseUp,
+      [this.config.addPolygonPointOnMouseDown && startOnSingleClick ? 
+        'mouseDown' : 'mouseUp']: this.onMouseUpDown,
       dblClick: this.onDblClick
     });
     
@@ -41,7 +42,7 @@ export default class RubberbandPolygonTool extends Tool {
   onMouseMove = (x, y) =>
     this.rubberband.dragTo([ x, y ]);
 
-  onMouseUp = () => {
+  onMouseUpDown = () => {
     const { width, height } = this.rubberband.getBoundingClientRect();
 
     const minWidth = this.config.minSelectionWidth || 4;
