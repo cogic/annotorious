@@ -158,12 +158,15 @@ export default class AnnotationLayer extends EventEmitter {
   _onMouseDown = evt => {
     if (evt.button !== 0) return;  // Left click
 
-    if (!(this.readOnly || (this.allowDrawingWithSelection ? this.currentHover : this.selectedShape) || this.tools.current.isDrawing)) {
-      if (this.allowDrawingWithSelection && !this.tools?.current?.isDrawing && this.selectedShape !== this.currentHover) {
-        this.selectCurrentHover();
-      }
+    if (
+      !(
+        this.readOnly ||
+        (this.allowDrawingWithSelection ? this.selectedShape && this.selectedShape.element === this.currentHover : this.selectedShape) ||
+        this.tools.current.isDrawing
+      )
+    ) {
 
-      // No active selection (or currentHover when allowDrawingWithSelection) & not drawing now? Start drawing.
+      // No active selection (or active selection is not current Hover when allowDrawingWithSelection) & not drawing now? Start drawing.
       this.tools.current.start(evt, this.drawOnSingleClick && !this.currentHover);
     } else if (!this.tools?.current?.isDrawing && this.selectedShape !== this.currentHover) {
       // Not drawing and another shape was clicked? Select.
