@@ -182,14 +182,14 @@ export default class EditableRect extends EditableShape {
     const constrain = (coord, max) =>
       coord < 0 ? 0 : (coord > max ? max : coord);
 
+    const { naturalWidth, naturalHeight } = this.env.image;
+
     if (this.grabbedElem) {
       const pos = this.getSVGPoint(evt);
 
       if (this.grabbedElem === this.rectangle) {
         // x/y changes by mouse offset, w/h remains unchanged
         const { w, h } = getRectSize(this.rectangle);
-
-        const { naturalWidth, naturalHeight } = this.env.image;
 
         const x = constrain(pos.x - this.mouseOffset.x, naturalWidth - w);
         const y = constrain(pos.y - this.mouseOffset.y, naturalHeight - h);
@@ -202,10 +202,15 @@ export default class EditableRect extends EditableShape {
         const handleIdx = this.handles.indexOf(this.grabbedElem);
         const oppositeHandle = this.handles[handleIdx ^ 2];
 
+        const constrainMousePos = {
+          x: Math.min(Math.max(pos.x, 0), naturalWidth),
+          y: Math.min(Math.max(pos.y, 0), naturalHeight),
+        };
+
         const { x, y, w, h } = 
           this.grabbedType === CORNER
-          ? this.stretchCorners(handleIdx, oppositeHandle, pos)
-          : this.stretchEdge(handleIdx, oppositeHandle, pos);
+          ? this.stretchCorners(handleIdx, oppositeHandle, constrainMousePos)
+          : this.stretchEdge(handleIdx, oppositeHandle, constrainMousePos);
 
         this.emit('update', toRectFragment(x, y, w, h, this.env.image, this.config.fragmentUnit));
       }
@@ -227,7 +232,13 @@ export default class EditableRect extends EditableShape {
     this.setSize(x, y, w, h);
   }
 
+  detachListeners = () => {
+    this.svg.removeEventListener('mousemove', this.onMouseMove);
+    this.svg.removeEventListener('mouseup', this.onMouseUp);
+  }
+
   destroy() {
+    this.detachListeners();
     this.containerGroup.parentNode.removeChild(this.containerGroup);
     super.destroy();
   }

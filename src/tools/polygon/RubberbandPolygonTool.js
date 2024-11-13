@@ -39,10 +39,16 @@ export default class RubberbandPolygonTool extends Tool {
     }
   }
 
-  onMouseMove = (x, y) =>
-    this.rubberband.dragTo([ x, y ]);
+  onMouseMove = (x, y) => {
+    // Constrain the initial coordinates (x, y) to be within the image bounds
+    const { naturalWidth, naturalHeight } = this.env.image;
+    const constrainX = Math.min(Math.max(x, 0), naturalWidth);
+    const constrainY = Math.min(Math.max(y, 0), naturalHeight);
 
-  onMouseUpDown = () => {
+    this.rubberband.dragTo([constrainX, constrainY]);
+  }
+
+  onMouseUp = () => {
     const { width, height } = this.rubberband.getBoundingClientRect();
 
     const minWidth = this.config.minSelectionWidth || 4;
@@ -54,6 +60,12 @@ export default class RubberbandPolygonTool extends Tool {
       this.emit('cancel');
       this.stop();
     }
+  }
+  
+  onMouseUpDown = () => {
+    // It seems like renaming 'onMouseUp' to 'onMouseUpDown' would be appropriate.
+    // However, do not do this because the 'onMouseUp' function is used in annotorious-openseadragon.
+    this.onMouseUp();
   }
 
   onDblClick = () => {

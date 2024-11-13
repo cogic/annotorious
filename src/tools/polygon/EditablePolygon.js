@@ -116,10 +116,10 @@ export default class EditablePolygon extends EditableShape {
     if (this.grabbedElem) {
       const pos = this.getSVGPoint(evt);
 
+      const { naturalWidth, naturalHeight } = this.env.image;
+
       if (this.grabbedElem === this.shape) {
         const { x, y, width, height } = getBBox(this.shape);
-
-        const { naturalWidth, naturalHeight } = this.env.image;
 
         const dx = constrain(x, pos.x - this.grabbedAt.x, naturalWidth - width);
         const dy = constrain(y, pos.y - this.grabbedAt.y, naturalHeight - height);
@@ -136,11 +136,16 @@ export default class EditablePolygon extends EditableShape {
       } else {
         const handleIdx = this.handles.indexOf(this.grabbedElem);
 
+        const constrainMousePos = {
+          x: Math.min(Math.max(pos.x, 0), naturalWidth),
+          y: Math.min(Math.max(pos.y, 0), naturalHeight),
+        };
+
         const updatedPoints = getPoints(this.shape).map((pt, idx) =>
-          (idx === handleIdx) ? pos : pt);
+          (idx === handleIdx) ? constrainMousePos : pt);
 
         this.setPoints(updatedPoints);
-        this.setHandleXY(this.handles[handleIdx], pos.x, pos.y);
+        this.setHandleXY(this.handles[handleIdx], constrainMousePos.x, constrainMousePos.y);
 
         this.emit('update', toSVGTarget(this.shape, this.env.image));
       }
@@ -169,7 +174,13 @@ export default class EditablePolygon extends EditableShape {
     points.forEach((pt, idx) => this.setHandleXY(this.handles[idx], pt.x, pt.y));
   }
 
+  detachListeners = () => {
+    this.svg.removeEventListener('mousemove', this.onMouseMove);
+    this.svg.removeEventListener('mouseup', this.onMouseUp);
+  }
+
   destroy = () => {
+    this.detachListeners();
     this.containerGroup.parentNode.removeChild(this.containerGroup);
     super.destroy();
   }
