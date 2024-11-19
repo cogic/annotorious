@@ -71,7 +71,7 @@ export default class EditablePolygon extends EditableShape {
     this.containerGroup.appendChild(this.elementGroup);
     g.appendChild(this.containerGroup);
 
-    format(this.shape, annotation, config.formatters);
+    format(this.shape, annotation, config.formatters, this.elementGroup);
 
     // The grabbed element (handle or entire shape), if any
     this.grabbedElem = null;

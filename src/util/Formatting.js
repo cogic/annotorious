@@ -42,8 +42,9 @@ const appendFormatterEl = (formatterEl, shape) => {
  * - 'className' added to the CSS class list
  * - 'data-*' added as data attributes
  * - 'style' a list of CSS styles (in the form of a string) 
+ * - 'editableShapeStyle' a list of CSS styles for editableShape (in the form of a string) 
  */
-export const format = (shape, annotation, formatters) => {
+export const format = (shape, annotation, formatters, editableShape) => {
   // The formatter can be undefined
   if (!formatters)
     return shape;
@@ -60,13 +61,16 @@ export const format = (shape, annotation, formatters) => {
     } else if (format.nodeType === Node.ELEMENT_NODE) {
       merged.elements = merged.elements ? [...merged.elements, format] : [format];
     } else {
-      const { className, style, element } = format;
+      const { className, style, editableShapeStyle, element } = format;
 
       if (className)
         merged.className = merged.className ? `${merged.className} ${className}` : className;
 
       if (style)
         merged.style = merged.style ? `${merged.style} ${style}` : style;
+      
+      if (editableShapeStyle)
+        merged.editableShapeStyle = merged.editableShapeStyle ? `${merged.editableShapeStyle} ${editableShapeStyle}` : editableShapeStyle;
 
       if (element)
         merged.elements = merged.elements ? [...merged.elements, element] : [element];
@@ -82,7 +86,7 @@ export const format = (shape, annotation, formatters) => {
     return merged;
   }, {});
 
-  const { className, style, elements } = format;
+  const { className, style, editableShapeStyle, elements } = format;
 
   if (className)
     addClass(shape, className);
@@ -97,6 +101,10 @@ export const format = (shape, annotation, formatters) => {
     } else {
       shape.setAttribute('style', style);
     }
+  }
+
+  if (editableShapeStyle && editableShape) {
+    editableShape.setAttribute('style', editableShapeStyle);
   }
 
   if (elements)
