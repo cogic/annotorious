@@ -99,7 +99,7 @@ export default class EditablePolygon extends EditableShape {
 
     this.mask.redraw();
 
-    const { x, y, width, height } = outer.getBBox();
+    const { x, y, width, height } = inner.getBBox();
     setFormatterElSize(this.elementGroup, x, y, width, height);
   }
 
