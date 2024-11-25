@@ -44,7 +44,7 @@ const appendFormatterEl = (formatterEl, shape) => {
  * - 'style' a list of CSS styles (in the form of a string) 
  * - 'shapeStyle' a list of CSS styles for shape (in the form of a string) 
  */
-export const format = (shape, annotation, formatters, editableShape) => {
+export const format = (shape, annotation, formatters) => {
   // The formatter can be undefined
   if (!formatters)
     return shape;
