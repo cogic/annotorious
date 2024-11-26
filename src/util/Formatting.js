@@ -18,7 +18,9 @@ const formatSvgEl = (svgEl, x, y, w, h) => {
 }
 
 const appendFormatterEl = (formatterEl, shape) => {
-  const { x, y, width, height } = shape.getBBox();
+  const inner = shape.querySelector('.a9s-inner');
+  const targetBox = inner || shape;
+  const { x, y, width, height } = targetBox.getBBox();
 
   const svgEl = document.createElementNS(SVG_NAMESPACE, 'svg');
   svgEl.setAttribute('class', 'a9s-formatter-el');
