@@ -80,7 +80,9 @@ export default class AnnotationLayer extends EventEmitter {
 
     if (config.crosshair) {
       this.crosshair = new Crosshair(this.g, naturalWidth, naturalHeight);
-      addClass(this.svg, 'no-cursor');
+      if (!config.crosshairWithCursor){
+        addClass(this.svg, 'no-cursor');
+      }
     }
 
     this.selectedShape = null;
