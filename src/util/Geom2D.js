@@ -62,16 +62,19 @@ export const pointInEllipse = (point, cx, cy, rx, ry, rotation) => {
  * Hit test: checks if this point is inside the polygon.
  * @param {Array} xy the point [x, y]
  * @param {Array<number>} points polygon corner points 
+ * @param {boolean} [noneZeroMode=true] whether to use None Zero Mode 
  * @returns {boolean}
  */
-export const pointInPolygon = (xy, points) => {
+export const pointInPolygon = (xy, points, noneZeroMode = true) => {
   // Algorithm checks, if xy is in Polygon
   // algorithm based on
   // https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html/pnpoly.html
+  // and https://www.cnblogs.com/guogangj/p/5127527.html
   const x = xy[0];
   const y = xy[1];
   
-  let inside = false;
+  let oddNodes = false;
+  let zeroState = 0;
 
   for (let i=0, j=points.length-1; i < points.length; j=i++) {
     const xi = points[i][0], yi = points[i][1];
@@ -80,11 +83,18 @@ export const pointInPolygon = (xy, points) => {
     const intersect = ((yi > y) != (yj > y))
       && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
     
-      if (intersect)
-        inside = !inside;
+    if (intersect) {
+      oddNodes = !oddNodes;
+
+      if (yi > yj) {
+        zeroState++;
+      } else {
+        zeroState--;
+      }
+    }
   }
   
-  return inside;
+  return noneZeroMode ? zeroState != 0 : oddNodes;
 }
 
 /**
