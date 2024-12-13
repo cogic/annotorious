@@ -59,12 +59,18 @@
         anno = Annotorious.init({
           image: 'hallstatt',
           locale: 'auto',
+          disableEditor: true,
           drawOnSingleClick: true,
           enableEdgeControls: true,
-          widgets: [
-            { widget: 'COMMENT' },
-            { widget: 'TAG', vocabulary: [ 'Animal', 'Building', 'Waterbody'] }
-          ]
+          handleRadius: 4,
+          allowEmpty: true,
+          allowDrawingWithSelection: true,
+          minPolygonPoints: 3,
+          crosshair: true,
+          crosshairWithCursor: true,
+
+          // Only works when drawOnSingleClick is true
+          addPolygonPointOnMouseDown: true,
         });
 
         anno.setAuthInfo({
@@ -86,6 +92,11 @@
 
         anno.on('createAnnotation', function (annotation) {
           console.log('created', annotation);
+        });
+
+        anno.on('createSelection', (selection) => {
+          console.log('createSelection', selection);
+          anno.updateSelected(selection, true);
         });
 
         anno.on('updateAnnotation', function(annotation, previous) {
