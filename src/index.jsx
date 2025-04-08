@@ -202,6 +202,8 @@ export class Annotorious {
 
   getCurrentDrawingTool = () => this._app.current.getCurrentDrawingTool();
 
+  getSelectedShape = () => this._app.current.getSelectedShape();
+
   listDrawingTools = () =>
     this._app.current.listDrawingTools();
 

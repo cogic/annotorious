@@ -309,6 +309,9 @@ export default class ImageAnnotator extends Component  {
 
   getCurrentDrawingTool = () => this.annotationLayer.tools?.current;
 
+  getSelectedShape = () =>
+    this.annotationLayer.selectedShape;
+
   listDrawingTools = () =>
     this.annotationLayer.listDrawingTools();
 
