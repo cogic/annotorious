@@ -24,6 +24,8 @@ export default class RubberbandRectTool extends Tool {
   }
 
   stop = () => {
+    this.detachListeners();
+
     if (this.rubberband) {
       this.rubberband.destroy();
       this.rubberband = null;
@@ -40,7 +42,6 @@ export default class RubberbandRectTool extends Tool {
   }
   
   onMouseUp = () => {
-    this.detachListeners();
     this.started = false;
 
     const { width, height } = this.rubberband.getBoundingClientRect();
