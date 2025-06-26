@@ -72,12 +72,16 @@ export default class ImageAnnotator extends Component  {
 
   onKeyUp = evt => {
     if (evt.which === 27) { // Escape
-      this.annotationLayer.stopDrawing();
-      
-      const { selectedAnnotation } = this.state;
-      if (selectedAnnotation) {
-        this.cancelSelected();
-        this.props.onCancelSelected(selectedAnnotation);
+      const { disableEscapeKey } = this.props.config;
+
+      if (!disableEscapeKey) {
+        this.annotationLayer.stopDrawing();
+        
+        const { selectedAnnotation } = this.state;
+        if (selectedAnnotation) {
+          this.cancelSelected();
+          this.props.onCancelSelected(selectedAnnotation);
+        }
       }
     } else if (evt.which === 46) { // Delete
       const { disableDeleteKey } = this.props.config;
