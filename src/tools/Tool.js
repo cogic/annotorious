@@ -153,6 +153,7 @@ export class ToolLike extends EventEmitter {
  * Base class that adds some convenience stuff for tool plugins.
  */
 export default class Tool extends ToolLike {
+  _eventTarget
 
   constructor(g, config, env) {
     super(g, config, env);
@@ -161,6 +162,7 @@ export default class Tool extends ToolLike {
     // the user has started moving, so we can
     // fire the startSelection event
     this.started = false;
+    this._eventTarget = this.config.bindEventListenersInternally === true ? this.svg : document;
   }
 
   attachListeners = ({ mouseMove, mouseUp, mouseDown, dblClick }) => {
@@ -189,7 +191,7 @@ export default class Tool extends ToolLike {
       }
 
       // Mouse up goes on doc, so we capture events outside, too
-      document.addEventListener('mouseup', this.mouseUp);
+      this._eventTarget.addEventListener('mouseup', this.mouseUp);
     }
 
     if (mouseDown) {
@@ -200,7 +202,7 @@ export default class Tool extends ToolLike {
       }
 
       // Mouse down goes on doc, so we capture events outside, too
-      document.addEventListener('mousedown', this.mouseDown);
+      this._eventTarget.addEventListener('mousedown', this.mouseDown);
     }
 
     if (dblClick) {
@@ -209,7 +211,7 @@ export default class Tool extends ToolLike {
         dblClick(x, y, evt);
       }
 
-      document.addEventListener('dblclick', this.dblClick);
+      this._eventTarget.addEventListener('dblclick', this.dblClick);
     }
 
   }
@@ -219,13 +221,13 @@ export default class Tool extends ToolLike {
       this.svg.removeEventListener('mousemove', this.mouseMove);
 
     if (this.mouseUp)
-      document.removeEventListener('mouseup', this.mouseUp);
+      this._eventTarget.removeEventListener('mouseup', this.mouseUp);
 
     if (this.mouseDown)
-      document.removeEventListener('mousedown', this.mouseDown);
+      this._eventTarget.removeEventListener('mousedown', this.mouseDown);
 
     if (this.dblClick)
-      document.removeEventListener('dblclick', this.dblClick);
+      this._eventTarget.removeEventListener('dblclick', this.dblClick);
   }
 
   /**
