@@ -12,9 +12,12 @@ export default class RubberbandRectTool extends Tool {
     super(g, config, env);
 
     this.rubberband = null;
+    this._startOnSingleClick = false;
   }
 
-  startDrawing = (x, y) => {
+  startDrawing = (x, y, startOnSingleClick) => {
+    this._startOnSingleClick = startOnSingleClick;
+
     this.attachListeners({
       mouseMove: this.onMouseMove,
       mouseUp: this.onMouseUp
@@ -56,11 +59,11 @@ export default class RubberbandRectTool extends Tool {
 
       // Emit the completed shape...
       this.emit('complete', element);
-    } else {
+      this.stop();
+    } else if (!this._startOnSingleClick) {
       this.emit('cancel');
+      this.stop();
     }
-
-    this.stop();
   }
 
   get isDrawing() {
