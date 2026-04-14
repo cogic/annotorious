@@ -1,6 +1,6 @@
 {
   "name": "@cogic/annotorious",
-  "version": "2.7.22",
+  "version": "2.7.23",
   "description": "A JavaScript image annotation library",
   "main": "dist/annotorious.min.js",
   "scripts": {
